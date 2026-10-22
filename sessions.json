@@ -1,0 +1,18 @@
+{
+  "title": "סדנת השמיניות",
+  "subtitle": "בחרו את המפגש של היום",
+  "sessions": [
+    {
+      "id": "hashefa",
+      "title": "השפע שלי",
+      "subtitle": "מעגל התבוננות, תודעה והתרחבות",
+      "file": "sessions/hashefa.json"
+    },
+    {
+      "id": "friendship",
+      "title": "חברות",
+      "subtitle": "קשר וחיבור אנושי",
+      "file": "sessions/friendship.json"
+    }
+  ]
+}
