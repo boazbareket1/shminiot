@@ -194,6 +194,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .p-slide .block blockquote{font-size:clamp(1.6rem,3.8vw,2.5rem);line-height:1.35}
 .p-slide .block h3{font-size:clamp(1.4rem,3vw,2rem)}
 .p-slide .block.image img{max-height:62vh;object-fit:contain}
+.p-read .poem-body{font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.7}
+.p-slide .revealed .b-q{animation:qIn .45s ease;font-size:1.2em}
+@keyframes qIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.p-slide .revealed .b-q{animation:none}}
 .p-end{text-align:center}
 .p-end h2{font-family:var(--display);font-weight:500;font-size:clamp(2rem,5vw,3.4rem);margin:0 0 10px}
 .p-end p{color:var(--ink-soft);font-size:1.2rem;margin:0}
@@ -205,6 +209,21 @@ button{font:inherit;color:inherit;cursor:pointer}
 .p-bar .p-next:hover:not(:disabled){background:#3f7a6c}
 .p-prog{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
 .p-prog span{display:block;height:100%;background:var(--sand);transition:width .3s}
+.block.cards{border-top:4px solid var(--rose)}
+.card-stage{display:flex;justify-content:center;padding:14px 0 6px;perspective:900px}
+.draw-card{width:min(260px,72vw);min-height:330px;border-radius:18px;padding:26px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;box-shadow:0 14px 34px rgba(70,60,40,.18);border:1px solid rgba(255,255,255,.7)}
+.draw-card.back{background:radial-gradient(circle at 35% 30%,#f0cfcd,rgba(217,165,164,.9) 45%,#a9d3c7 100%)}
+.draw-card.back span{font-size:2.6rem;color:#fffaf0;opacity:.85}
+.draw-card.face{background:radial-gradient(circle at 50% 0%,var(--c1,#efdcb3),#fffaf0 62%);animation:flipIn .55s ease}
+.draw-card .c-t{font-family:var(--display);font-weight:500;font-size:1.7rem;line-height:1.2}
+.draw-card .c-x{font-size:1.05rem;line-height:1.55;color:var(--ink)}
+@keyframes flipIn{from{transform:rotateY(90deg);opacity:.3}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.draw-card.face{animation:none}}
+.draw-btn{display:flex;margin:6px auto 0;min-height:48px;padding:10px 26px;border-radius:999px;border:0;background:#9a5a58;color:#fff;font:inherit;font-weight:500;cursor:pointer}
+.draw-btn:hover{background:#864c4a}
+.p-slide .draw-card{width:min(340px,80vw);min-height:400px}
+.p-slide .draw-card .c-t{font-size:2.2rem}
+.p-slide .draw-card .c-x{font-size:1.3rem}
 .block.join{border-top:4px solid var(--sand)}
 .join-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .join-qr{width:min(220px,60vw);aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:#fffaf0}
@@ -581,6 +600,10 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         const link = b.lyricsUrl ? `<a class="lyrics-link" href="${esc(b.lyricsUrl)}" target="_blank" rel="noopener">למילות השיר ↗</a>` : '';
         return `<div class="block song" id="${id}"><div class="kind">${esc(b.label || 'שיר להאזנה')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${src}${b.text ? `<p class="listen">${esc(b.text)}</p>` : ''}${player}${lyrics}${link}${more}</div>`;
       }
+      case 'cards':
+        return `<div class="block cards" id="${id}">${kind}${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}
+          <div class="card-stage" aria-live="polite"><div class="draw-card back" aria-hidden="true"><span>✦</span></div></div>
+          <button type="button" class="draw-btn" data-draw="${id}">שליפת קלף</button>${src}${more}</div>`;
       case 'join': {
         const host = (() => { try { const u = new URL(b.url); return u.host.replace(/^www\./, '') + (b.code ? '' : u.pathname.replace(/\/$/, '')); } catch (_) { return ''; } })();
         return `<div class="block join" id="${id}"><div class="kind">${esc(b.label || 'השתתפות מהטלפון')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}
@@ -605,6 +628,20 @@ body.in-node .topbar{opacity:0;pointer-events:none}
       const open = () => { const v = $('#imgViewer'); v.querySelector('img').src = img.src; v.querySelector('img').alt = img.alt; v.classList.add('open'); v.querySelector('button').focus(); };
       img.addEventListener('click', open);
       img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+    root.querySelectorAll('[data-draw]').forEach(btn => {
+      const bi = +btn.dataset.draw.split('-b').pop();
+      const deck = (blocks || [])[bi]?.deck || [];
+      let bag = [];
+      btn.addEventListener('click', () => {
+        if (!deck.length) return;
+        if (!bag.length) bag = deck.map((_, i) => i).sort(() => Math.random() - .5);
+        const c = deck[bag.pop()];
+        const tints = ['#efdcb3','#a9d3c7','#f0cfcd','#b9dccf','#ead8ae','#f2d9d2'];
+        const stage = btn.parentElement.querySelector('.card-stage');
+        stage.innerHTML = `<div class="draw-card face" style="--c1:${tints[Math.floor(Math.random()*tints.length)]}"><div class="c-t">${esc(c.title)}</div><div class="c-x">${esc(c.text)}</div></div>`;
+        btn.textContent = 'קלף נוסף';
+      });
     });
     root.querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
       const box = btn.parentElement;
@@ -751,8 +788,17 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     const out = [];
     data.nodes.forEach((n, i) => {
       out.push({node: i, kind: 'title'});
-      const q = n.questions?.length ? [{node: i, kind: 'q'}] : [];
-      const bl = (n.blocks || []).map((b, j) => ({node: i, kind: 'block', j}));
+      // each question on its own step
+      const q = (n.questions || []).map((_, k) => ({node: i, kind: 'q', k}));
+      // each card: long read-aloud texts paragraph by paragraph, then its question revealed as a separate step
+      const bl = (n.blocks || []).flatMap((b, j) => {
+        const steps = [];
+        const parts = b.type === 'poem' ? String(b.text || '').split(/\n\s*\n/).filter(x => x.trim()) : [];
+        if (parts.length > 1) parts.forEach((_, part) => steps.push({node: i, kind: 'block', j, part, parts: parts.length}));
+        else steps.push({node: i, kind: 'block', j});
+        if (b.question) steps.push({node: i, kind: 'block', j, reveal: true});
+        return steps;
+      });
       out.push(...(n.questionsFirst === false ? [...bl, ...q] : [...q, ...bl]));
     });
     out.push({node: data.nodes.length - 1, kind: 'end'});
@@ -762,9 +808,18 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     const n = data.nodes[sl.node];
     const [c1, c2] = n.colors || PALETTE[sl.node % PALETTE.length];
     if (sl.kind === 'title') return `<div class="p-title"><div class="badge" style="--c1:${c1};--c2:${c2}"><span>${sl.node + 1}</span></div><h2>${esc(n.title)}</h2>${n.intro ? `<p>${esc(n.intro)}</p>` : ''}</div>`;
-    if (sl.kind === 'q') return `<div class="p-q"><div class="lbl">${esc(n.questionsTitle || 'שאלה לדיון')}</div>${n.questions.map(q => `<p class="qq">${esc(q)}</p>`).join('')}</div>`;
+    if (sl.kind === 'q') {
+      const many = n.questions.length > 1;
+      return `<div class="p-q"><div class="lbl">${esc(n.questionsTitle || 'שאלה לדיון')}${many ? ` · ${sl.k + 1} מתוך ${n.questions.length}` : ''}</div><p class="qq">${esc(n.questions[sl.k])}</p></div>`;
+    }
     if (sl.kind === 'end') return `<div class="p-end"><h2>תודה</h2><p>${esc(data.meta?.title || '')}</p></div>`;
-    return `<div class="blocks">${blockHTML(n.blocks[sl.j], `p-b${sl.j}`)}</div>`;
+    const b = n.blocks[sl.j];
+    if (sl.part !== undefined) {
+      const parts = String(b.text).split(/\n\s*\n/).filter(x => x.trim());
+      return `<div class="blocks"><div class="block poem p-read" id="p-b${sl.j}">${b.label ? `<div class="kind">${esc(b.label)} · ${sl.part + 1}/${sl.parts}</div>` : ''}${sl.part === 0 && b.title ? `<h3>${esc(b.title)}</h3>` : ''}<div class="poem-body">${esc(parts[sl.part])}</div></div></div>`;
+    }
+    const shown = sl.reveal ? b : Object.assign({}, b, {question: ''});
+    return `<div class="blocks${sl.reveal ? ' revealed' : ''}">${blockHTML(shown, `p-b${sl.j}`)}</div>`;
   }
   function showSlide(k) {
     si = Math.max(0, Math.min(slides.length - 1, k));
