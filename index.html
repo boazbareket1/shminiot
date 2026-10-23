@@ -154,7 +154,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .src{margin-top:8px;color:var(--ink-soft);font-size:.9rem}
 .block.poem .poem-body{font-family:var(--display);font-size:1.15rem;white-space:pre-line;line-height:1.85}
 .block.research{border-top:4px solid var(--sea)}
-.block.image img{width:100%;border-radius:12px;display:block}
+.block.image img{width:100%;border-radius:12px;display:block;cursor:zoom-in}
+.block.image .zoom-hint{display:block;margin-top:6px;color:var(--ink-soft);font-size:.82rem}
+#imgViewer{position:fixed;inset:0;z-index:200;background:rgba(15,20,20,.94);display:none;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+#imgViewer.open{display:flex}
+#imgViewer img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#imgViewer button{position:absolute;top:14px;left:14px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#1d2a2a;font-size:1.4rem;cursor:pointer}
 .block.image figcaption{color:var(--ink-soft);font-size:.9rem;margin-top:8px}
 .b-q{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(169,137,77,.45);font-size:1.05rem}
 .b-q span{display:inline-block;margin-inline-end:8px;font-size:.72rem;letter-spacing:.08em;color:#fff;background:var(--sand-deep);border-radius:999px;padding:1px 9px;vertical-align:2px}
@@ -334,6 +339,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
 </div>
 
 <!-- Expand modal -->
+<div id="imgViewer" role="dialog" aria-modal="true" aria-label="תמונה בהגדלה"><button type="button" aria-label="סגירה">✕</button><img alt=""></div>
 <div class="overlay" id="expandOverlay">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
@@ -524,7 +530,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         return `<div class="block song" id="${id}"><div class="kind">${esc(b.label || 'שיר להאזנה')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${src}${b.text ? `<p class="listen">${esc(b.text)}</p>` : ''}${player}${lyrics}${link}${more}</div>`;
       }
       case 'image':
-        return `<figure class="block image" id="${id}" style="margin:0"><img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || '')}" loading="lazy">${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}${more}</figure>`;
+        return `<figure class="block image" id="${id}" style="margin:0">${kind}<img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || '')}" loading="lazy" tabindex="0" role="button" aria-label="הגדלת התמונה">${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}<span class="zoom-hint">לחיצה על התמונה מגדילה אותה</span>${more}</figure>`;
       default:
         return `<div class="block text" id="${id}">${kind}${b.title ? `<h3>${esc(b.title)}</h3>` : ''}<p>${esc(b.text)}</p>${src}${more}</div>`;
     }
@@ -558,6 +564,11 @@ body.in-node .topbar{opacity:0;pointer-events:none}
       const b = n.blocks[+bi];
       openExpand(b.title || n.title, b.more);
     }));
+    $('#detailBody').querySelectorAll('.block.image img').forEach(img => {
+      const open = () => { const v = $('#imgViewer'); v.querySelector('img').src = img.src; v.querySelector('img').alt = img.alt; v.classList.add('open'); v.querySelector('button').focus(); };
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
     $('#detailBody').querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
       const box = btn.parentElement;
       box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="נגן השיר" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
@@ -569,6 +580,9 @@ body.in-node .topbar{opacity:0;pointer-events:none}
   }
 
   /* ---------- Modals ---------- */
+  const imgViewer = $('#imgViewer');
+  imgViewer.addEventListener('click', () => imgViewer.classList.remove('open'));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && imgViewer.classList.contains('open')) { e.stopImmediatePropagation(); imgViewer.classList.remove('open'); } }, true);
   function openOverlay(el) { el.classList.add('open'); }
   function closeOverlays() { document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open')); }
   document.querySelectorAll('.overlay').forEach(o => {
