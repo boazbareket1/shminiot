@@ -13,6 +13,12 @@
       "title": "חברות",
       "subtitle": "קשר וחיבור אנושי",
       "file": "sessions/friendship.json"
+    },
+    {
+      "id": "metziut",
+      "title": "המציאות והתודעה",
+      "subtitle": "האם אנו רואים את העולם כפי שהוא?",
+      "file": "sessions/metziut.json"
     }
   ]
 }
