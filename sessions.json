@@ -19,6 +19,12 @@
       "title": "המציאות והתודעה",
       "subtitle": "האם אנו רואים את העולם כפי שהוא?",
       "file": "sessions/metziut.json"
+    },
+    {
+      "id": "hakshava",
+      "title": "הקשבה",
+      "subtitle": "כוונון: אל עצמי, אל האחר, אל הרגע",
+      "file": "sessions/hakshava.json"
     }
   ]
 }
