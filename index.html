@@ -130,13 +130,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .back-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
 .back-btn:hover{background:#fffaf0}
 .detail-hero{position:relative;text-align:center;padding:26px 6px 14px}
-.detail-hero .badge{
+.detail-hero .badge,.p-title .badge{
   width:82px;height:82px;margin:0 auto 10px;position:relative;border-radius:50%;
   display:grid;place-items:center;font-family:var(--display);font-size:1.6rem;
 }
-.detail-hero .badge::before{content:"";position:absolute;inset:0;border-radius:50%;
+.detail-hero .badge::before,.p-title .badge::before{content:"";position:absolute;inset:0;border-radius:50%;
   background:radial-gradient(circle at 42% 38%,var(--c1),var(--c2) 60%,transparent 76%);filter:url(#wc-edge)}
-.detail-hero .badge span{position:relative}
+.detail-hero .badge span,.p-title .badge span{position:relative}
 .detail-hero h2{font-family:var(--display);font-weight:500;font-size:clamp(1.7rem,5vw,2.5rem);margin:0;line-height:1.2}
 .detail-hero p{margin:6px auto 0;color:var(--ink-soft);max-width:560px}
 
@@ -171,6 +171,40 @@ button{font:inherit;color:inherit;cursor:pointer}
 .yt-play{display:flex;gap:8px;align-items:center;border:0;border-radius:999px;padding:12px 22px;min-height:48px;background:rgba(255,255,255,.92);color:#1d2a2a;font:inherit;font-weight:500;cursor:pointer}
 .yt-play:hover{background:#fff}
 .lyrics-link{display:inline-block;margin-top:4px;color:var(--sea-deep)}
+/* ---------- Presentation mode ---------- */
+.present-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 18px;min-height:44px;font:inherit;color:var(--ink);cursor:pointer;backdrop-filter:blur(6px)}
+.present-btn:hover{background:#fffaf0}
+.present-btn svg{width:16px;height:16px;fill:var(--sea-deep)}
+#present{position:fixed;inset:0;z-index:12;display:none;flex-direction:column;background:radial-gradient(ellipse at 20% 10%,rgba(169,211,199,.35),transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(240,207,205,.4),transparent 55%),var(--paper)}
+#present.open{display:flex}
+.p-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px}
+.p-where{color:var(--ink-soft);font-size:.95rem}
+.p-stage{flex:1;overflow-y:auto;display:flex;padding:8px 18px 18px}
+.p-slide{margin:auto;width:100%;max-width:980px;animation:pIn .35s ease}
+@keyframes pIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.p-slide{animation:none}}
+.p-title{text-align:center}
+.p-title .badge{margin:0 auto 18px}
+.p-title h2{font-family:var(--display);font-weight:500;font-size:clamp(2.2rem,6vw,4rem);margin:0;line-height:1.15}
+.p-title p{font-size:clamp(1.15rem,2.6vw,1.6rem);color:var(--ink-soft);margin:14px 0 0}
+.p-q{text-align:center}
+.p-q .lbl{color:var(--sand-deep);font-size:1rem;letter-spacing:.04em;margin-bottom:18px}
+.p-q .qq{font-family:var(--display);font-size:clamp(1.7rem,4.6vw,3rem);line-height:1.35;margin:0 0 18px}
+.p-slide .block{font-size:clamp(1.05rem,2.1vw,1.35rem)}
+.p-slide .block blockquote{font-size:clamp(1.6rem,3.8vw,2.5rem);line-height:1.35}
+.p-slide .block h3{font-size:clamp(1.4rem,3vw,2rem)}
+.p-slide .block.image img{max-height:62vh;object-fit:contain}
+.p-end{text-align:center}
+.p-end h2{font-family:var(--display);font-weight:500;font-size:clamp(2rem,5vw,3.4rem);margin:0 0 10px}
+.p-end p{color:var(--ink-soft);font-size:1.2rem;margin:0}
+.p-bar{display:flex;align-items:center;gap:12px;padding:10px 18px calc(12px + env(safe-area-inset-bottom))}
+.p-bar button{min-height:48px;min-width:48px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:10px 20px;font:inherit;color:var(--ink);cursor:pointer}
+.p-bar button:hover:not(:disabled){background:#fffaf0}
+.p-bar button:disabled{opacity:.35;cursor:default}
+.p-bar .p-next{background:var(--sea-deep);border-color:var(--sea-deep);color:#fff}
+.p-bar .p-next:hover:not(:disabled){background:#3f7a6c}
+.p-prog{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.p-prog span{display:block;height:100%;background:var(--sand);transition:width .3s}
 .more-btn{margin-top:10px;border:0;background:none;color:var(--sea-deep);font-weight:400;padding:0;text-decoration:underline;text-underline-offset:4px}
 
 .questions{margin-top:26px}
@@ -293,7 +327,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
 
 <div class="app">
   <div class="topbar">
-    <span></span>
+    <button class="present-btn" id="presentBtn" hidden aria-label="מצב הצגה: מעבר על המפגש שקף אחר שקף"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>מצב הצגה</button>
     <button class="icon-btn" id="searchBtn" aria-label="חיפוש">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
     </button>
@@ -339,6 +373,16 @@ body.in-node .topbar{opacity:0;pointer-events:none}
 </div>
 
 <!-- Expand modal -->
+ <section id="present" role="dialog" aria-modal="true" aria-label="מצב הצגה">
+  <div class="p-top"><span class="p-where" id="pWhere"></span>
+    <button class="icon-btn" id="pClose" aria-label="יציאה ממצב הצגה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="p-stage" id="pStage"></div>
+  <div class="p-bar">
+    <button class="p-prev" id="pPrev" aria-label="השקף הקודם">→ הקודם</button>
+    <div class="p-prog" aria-hidden="true"><span id="pProg"></span></div>
+    <button class="p-next" id="pNext" aria-label="השקף הבא">הבא ←</button>
+  </div>
+</section>
 <div id="imgViewer" role="dialog" aria-modal="true" aria-label="תמונה בהגדלה"><button type="button" aria-label="סגירה">✕</button><img alt=""></div>
 <div class="overlay" id="expandOverlay">
   <div class="modal" role="dialog" aria-modal="true">
@@ -536,6 +580,22 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     }
   }
 
+  function bindBlockUI(root, blocks, title) {
+    root.querySelectorAll('[data-more]').forEach(btn => btn.addEventListener('click', () => {
+      const bi = +btn.dataset.more.split('-b').pop();
+      const b = (blocks || [])[bi];
+      if (b) openExpand(b.title || title, b.more);
+    }));
+    root.querySelectorAll('.block.image img').forEach(img => {
+      const open = () => { const v = $('#imgViewer'); v.querySelector('img').src = img.src; v.querySelector('img').alt = img.alt; v.classList.add('open'); v.querySelector('button').focus(); };
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+    root.querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
+      const box = btn.parentElement;
+      box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="נגן השיר" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    }));
+  }
   function renderDetail(key) {
     const isHub = key === 'hub';
     const n = isHub ? data.hub : data.nodes[key];
@@ -559,20 +619,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         <button data-go="${key+1}" ${key === total-1 ? 'disabled' : ''}>${key < total-1 ? esc(data.nodes[key+1].title) : ''} ←</button></div>`;
     }
     $('#detailBody').innerHTML = html;
-    $('#detailBody').querySelectorAll('[data-more]').forEach(btn => btn.addEventListener('click', () => {
-      const [, bi] = btn.dataset.more.split('-b');
-      const b = n.blocks[+bi];
-      openExpand(b.title || n.title, b.more);
-    }));
-    $('#detailBody').querySelectorAll('.block.image img').forEach(img => {
-      const open = () => { const v = $('#imgViewer'); v.querySelector('img').src = img.src; v.querySelector('img').alt = img.alt; v.classList.add('open'); v.querySelector('button').focus(); };
-      img.addEventListener('click', open);
-      img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
-    });
-    $('#detailBody').querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
-      const box = btn.parentElement;
-      box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="נגן השיר" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-    }));
+    bindBlockUI($('#detailBody'), n.blocks, n.title);
     $('#detailBody').querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => {
       const t = +btn.dataset.go;
       if (t >= 0 && t < data.nodes.length) openNode(t);
@@ -682,6 +729,83 @@ body.in-node .topbar{opacity:0;pointer-events:none}
   $('#bsTrigger').addEventListener('click', () => toggleBackstage());
   $('#bsClose').addEventListener('click', () => toggleBackstage(false));
 
+  /* ---------- Presentation mode (linear walk-through) ---------- */
+  const present = $('#present');
+  let slides = [], si = 0;
+  function buildSlides() {
+    const out = [];
+    data.nodes.forEach((n, i) => {
+      out.push({node: i, kind: 'title'});
+      const q = n.questions?.length ? [{node: i, kind: 'q'}] : [];
+      const bl = (n.blocks || []).map((b, j) => ({node: i, kind: 'block', j}));
+      out.push(...(n.questionsFirst === false ? [...bl, ...q] : [...q, ...bl]));
+    });
+    out.push({node: data.nodes.length - 1, kind: 'end'});
+    return out;
+  }
+  function slideHTML(sl) {
+    const n = data.nodes[sl.node];
+    const [c1, c2] = n.colors || PALETTE[sl.node % PALETTE.length];
+    if (sl.kind === 'title') return `<div class="p-title"><div class="badge" style="--c1:${c1};--c2:${c2}"><span>${sl.node + 1}</span></div><h2>${esc(n.title)}</h2>${n.intro ? `<p>${esc(n.intro)}</p>` : ''}</div>`;
+    if (sl.kind === 'q') return `<div class="p-q"><div class="lbl">${esc(n.questionsTitle || 'שאלה לדיון')}</div>${n.questions.map(q => `<p class="qq">${esc(q)}</p>`).join('')}</div>`;
+    if (sl.kind === 'end') return `<div class="p-end"><h2>תודה</h2><p>${esc(data.meta?.title || '')}</p></div>`;
+    return `<div class="blocks">${blockHTML(n.blocks[sl.j], `p-b${sl.j}`)}</div>`;
+  }
+  function showSlide(k) {
+    si = Math.max(0, Math.min(slides.length - 1, k));
+    const sl = slides[si], n = data.nodes[sl.node];
+    $('#pStage').innerHTML = `<div class="p-slide">${slideHTML(sl)}</div>`;
+    $('#pStage').scrollTop = 0;
+    $('#pWhere').textContent = sl.kind === 'end' ? 'סוף המפגש' : `${sl.node + 1}. ${n.title}`;
+    $('#pProg').style.width = `${(si / (slides.length - 1)) * 100}%`;
+    $('#pPrev').disabled = si === 0;
+    $('#pNext').disabled = si === slides.length - 1;
+    if (sl.kind === 'block') bindBlockUI($('#pStage'), n.blocks, n.title, 'p-b');
+    if (current !== sl.node) { current = sl.node; renderBackstage(); }
+    try { history.replaceState(null, '', location.pathname + location.search + '#present-' + (si + 1)); } catch (_) {}
+  }
+  function startPresent(at = 0) {
+    if (!data) return;
+    if (current !== null) goHome(false);
+    slides = buildSlides();
+    present.classList.add('open');
+    showSlide(at);
+    $('#pNext').focus({preventScroll:true});
+  }
+  function stopPresent() {
+    present.classList.remove('open');
+    $('#pStage').innerHTML = '';
+    current = null; renderBackstage();
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
+    $('#presentBtn').focus({preventScroll:true});
+  }
+  $('#presentBtn').addEventListener('click', () => startPresent(0));
+  $('#pClose').addEventListener('click', stopPresent);
+  $('#pNext').addEventListener('click', () => showSlide(si + 1));
+  $('#pPrev').addEventListener('click', () => showSlide(si - 1));
+  document.addEventListener('keydown', e => {
+    if (!present.classList.contains('open') || imgViewer.classList.contains('open')) return;
+    if (/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Escape') {
+      if (document.querySelector('.overlay.open') || bs.classList.contains('open')) return;
+      e.stopImmediatePropagation(); return stopPresent();
+    }
+    const next = ['ArrowLeft', 'PageDown', ' '].includes(e.key), prev = ['ArrowRight', 'PageUp'].includes(e.key);
+    if ((next || prev) && !document.querySelector('.overlay.open')) {
+      if (e.key === ' ' && document.activeElement?.tagName === 'BUTTON' && !document.activeElement.closest('.p-bar')) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      showSlide(si + (next ? 1 : -1));
+    }
+  }, true);
+  let tx = null, ty = null;
+  present.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive: true});
+  present.addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) showSlide(si + (dx > 0 ? 1 : -1));
+    tx = ty = null;
+  });
+
   /* ---------- Keyboard & history ---------- */
   document.addEventListener('keydown', e => {
     const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName);
@@ -731,9 +855,12 @@ body.in-node .topbar{opacity:0;pointer-events:none}
       return;
     }
     data = d;
+    $('#presentBtn').hidden = false;
     renderHome();
     buildIndex();
-    if (location.hash) routeFromHash(true);
+    const pm = location.hash.match(/^#present-(\d+)$/);
+    if (pm) startPresent(+pm[1] - 1);
+    else if (location.hash) routeFromHash(true);
   }
   function showPicker(lib) {
     const list = lib.sessions || [];
