@@ -160,6 +160,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .b-q span{display:inline-block;margin-inline-end:8px;font-size:.72rem;letter-spacing:.08em;color:#fff;background:var(--sand-deep);border-radius:999px;padding:1px 9px;vertical-align:2px}
 .block.quote .b-q{border-top-color:rgba(184,116,114,.4)}
 .questions .q-main li{font-size:1.2rem;font-family:var(--display);border-style:solid;background:rgba(255,252,245,.82)}
+.song .listen{font-style:italic;color:var(--ink-soft);margin:8px 0 12px}
+.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#1d2a2a;display:grid;place-items:center;margin:6px 0 10px}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-play{display:flex;gap:8px;align-items:center;border:0;border-radius:999px;padding:12px 22px;min-height:48px;background:rgba(255,255,255,.92);color:#1d2a2a;font:inherit;font-weight:500;cursor:pointer}
+.yt-play:hover{background:#fff}
+.lyrics-link{display:inline-block;margin-top:4px;color:var(--sea-deep)}
 .more-btn{margin-top:10px;border:0;background:none;color:var(--sea-deep);font-weight:400;padding:0;text-decoration:underline;text-underline-offset:4px}
 
 .questions{margin-top:26px}
@@ -497,6 +503,11 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     const q = b.question ? `<div class="b-q"><span>שאלה</span>${esc(b.question)}</div>` : '';
     return blockCore(b, id, more, src, kind).replace(/<\/(div|figure)>$/, q + '</$1>');
   }
+  function ytId(u) {
+    if (!u) return '';
+    const m = String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(u).match(/^([\w-]{11})$/);
+    return m ? m[1] : '';
+  }
   function blockCore(b, id, more, src, kind) {
     switch (b.type) {
       case 'quote':
@@ -505,6 +516,13 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         return `<div class="block poem" id="${id}">${kind}${b.title ? `<h3>${esc(b.title)}</h3>` : ''}<div class="poem-body">${esc(b.text)}</div>${src}${more}</div>`;
       case 'research':
         return `<div class="block research" id="${id}"><div class="kind">${esc(b.label || 'מחקר')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}<p>${esc(b.text)}</p>${src}${more}</div>`;
+      case 'song': {
+        const yt = ytId(b.youtube);
+        const player = yt ? `<div class="yt" data-yt="${yt}"><button class="yt-play" aria-label="השמעת השיר ${esc(b.title || '')}"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>השמעה</button></div>` : '';
+        const lyrics = b.lyrics ? `<div class="poem-body">${esc(b.lyrics)}</div>` : '';
+        const link = b.lyricsUrl ? `<a class="lyrics-link" href="${esc(b.lyricsUrl)}" target="_blank" rel="noopener">למילות השיר ↗</a>` : '';
+        return `<div class="block song" id="${id}"><div class="kind">${esc(b.label || 'שיר להאזנה')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${src}${b.text ? `<p class="listen">${esc(b.text)}</p>` : ''}${player}${lyrics}${link}${more}</div>`;
+      }
       case 'image':
         return `<figure class="block image" id="${id}" style="margin:0"><img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || '')}" loading="lazy">${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}${more}</figure>`;
       default:
@@ -539,6 +557,10 @@ body.in-node .topbar{opacity:0;pointer-events:none}
       const [, bi] = btn.dataset.more.split('-b');
       const b = n.blocks[+bi];
       openExpand(b.title || n.title, b.more);
+    }));
+    $('#detailBody').querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
+      const box = btn.parentElement;
+      box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="נגן השיר" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
     }));
     $('#detailBody').querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => {
       const t = +btn.dataset.go;
