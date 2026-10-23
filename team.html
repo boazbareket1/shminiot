@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>שמיניות · עמדת המנחים</title>
+<meta name="apple-mobile-web-app-title" content="שמיניות">
+<meta name="theme-color" content="#f6f1e6">
+<link rel="apple-touch-icon" href="og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f1e6; --ink:#3a3832; --ink-soft:#6b665b; --sea:#7fb5a6; --sea-deep:#4f8c7d;
+  --rose:#d9a5a4; --sand:#d8b97e; --sand-deep:#a9894d; --card:rgba(255,252,245,.82);
+  --line:rgba(58,56,50,.14); --shadow:0 10px 30px rgba(70,60,40,.12);
+  --display:"Frank Ruhl Libre",serif; --body:"Rubik",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:radial-gradient(ellipse at 15% 0%,rgba(169,211,199,.45),transparent 50%),
+             radial-gradient(ellipse at 90% 100%,rgba(240,207,205,.5),transparent 55%),var(--paper);
+  background-attachment:fixed;color:var(--ink);font-family:var(--body);font-weight:300;line-height:1.55;min-height:100vh
+}
+a{color:var(--sea-deep)}
+main{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+header{text-align:center;margin-bottom:26px}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(1.8rem,5vw,2.6rem);margin:0}
+header p{color:var(--ink-soft);margin:4px 0 0}
+h2{font-family:var(--display);font-weight:500;font-size:1.4rem;margin:30px 0 12px}
+.sessions{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.s-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.s-head{display:flex;gap:12px;align-items:center}
+.s-dot{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:1.2rem;background:radial-gradient(circle at 40% 35%,var(--c1),var(--c2) 70%)}
+.s-t{font-family:var(--display);font-weight:500;font-size:1.25rem;line-height:1.2}
+.s-sub{color:var(--ink-soft);font-size:.9rem}
+.s-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:999px;text-decoration:none;font:inherit;font-weight:400;border:1px solid var(--line);background:#fffaf0;color:var(--ink);cursor:pointer}
+.btn:hover{background:#fff}
+.btn.primary{background:var(--sea-deep);border-color:var(--sea-deep);color:#fff}
+.btn.primary:hover{background:#3f7a6c}
+.s-links{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.9rem}
+.s-links button{border:0;background:none;padding:6px 0;color:var(--sea-deep);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.check input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--sea-deep);flex:none}
+.check input:checked + span{color:var(--ink-soft);text-decoration:line-through}
+.reset{margin-top:10px;font-size:.9rem}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.keys dt{font-weight:500}
+kbd{display:inline-block;min-width:28px;text-align:center;padding:2px 8px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:#fffaf0;font-family:var(--body);font-size:.9rem}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+.note{color:var(--ink-soft);font-size:.88rem;margin:10px 0 0}
+.loading{color:var(--ink-soft);text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>עמדת המנחים</h1>
+    <p>סדנת השמיניות · בועז ויפעת</p>
+  </header>
+
+  <h2>המפגשים</h2>
+  <div class="sessions" id="sessions"><div class="loading">טוען את המפגשים…</div></div>
+  <p class="note">"מצב הצגה" פותח את המפגש שקף אחר שקף, מהשקף הראשון. "קישור למשתתפים" מעתיק את כתובת המפגש לשליחה בוואטסאפ.</p>
+
+  <h2>לפני כל מפגש</h2>
+  <div class="box">
+    <ul class="check" id="check">
+      <li><label><input type="checkbox"><span>לאפס את התוצאות במנטימטר (Reset results) או לפתוח מצגת חדשה</span></label></li>
+      <li><label><input type="checkbox"><span>לפתוח את המנטימטר במצב Present בחשבון, בלשונית נפרדת</span></label></li>
+      <li><label><input type="checkbox"><span>לבדוק חיבור למקרן ולרמקול, ולהשמיע שיר אחד לבדיקה</span></label></li>
+      <li><label><input type="checkbox"><span>לעבור על פאנל המנחה (מקש M): זמנים, חלוקה לזוגות, מי מוביל איזה עלה</span></label></li>
+      <li><label><input type="checkbox"><span>להכין את הקישור לקבוצת הוואטסאפ לשיתוף בסוף המפגש</span></label></li>
+      <li><label><input type="checkbox"><span>חפץ מרכזי למעגל, מים, ושעון או טיימר</span></label></li>
+    </ul>
+    <button class="btn reset" id="resetCheck" type="button">ניקוי הרשימה</button>
+  </div>
+
+  <h2>קיצורים במהלך המפגש</h2>
+  <div class="box">
+    <dl class="keys">
+      <dt><kbd>←</kbd> / <kbd>רווח</kbd></dt><dd>השקף הבא (במצב הצגה), או העלה הבא</dd>
+      <dt><kbd>→</kbd></dt><dd>השקף או העלה הקודם</dd>
+      <dt><kbd>M</kbd></dt><dd>פאנל המנחה: זמנים, הנחיות ושעון</dd>
+      <dt><kbd>/</kbd></dt><dd>חיפוש בתוכן המפגש</dd>
+      <dt><kbd>Esc</kbd></dt><dd>סגירה, חזרה לפרח</dd>
+    </dl>
+    <p class="note">בטלפון ובטאבלט: החלקה הצידה מעבירה שקף, והנקודה הקטנה בפינה השמאלית התחתונה פותחת את פאנל המנחה.</p>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const PALETTE = [['#a9d3c7','rgba(127,181,166,.85)'],['#f0cfcd','rgba(217,165,164,.85)'],['#efdcb3','rgba(216,185,126,.85)'],
+                   ['#b9dccf','rgba(110,170,150,.8)'],['#f2d9d2','rgba(205,150,148,.82)'],['#ead8ae','rgba(200,170,110,.82)']];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const base = new URL('./', location.href).href;
+
+  function toast(msg) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); toast('הקישור הועתק'); }
+    catch (_) { prompt('העתיקו את הקישור:', text); }
+  }
+
+  async function getJSON(u) { const r = await fetch(u, {cache: 'no-store'}); if (!r.ok) throw new Error(u); return r.json(); }
+  async function loadLib() {
+    try { return await getJSON('sessions.json'); }
+    catch (_) { return window.workshopLibrary || null; }
+  }
+
+  (async () => {
+    const lib = await loadLib();
+    const box = $('#sessions');
+    if (!lib?.sessions?.length) { box.innerHTML = '<div class="loading">לא נמצאו מפגשים</div>'; return; }
+    const cards = await Promise.all(lib.sessions.map(async (s, i) => {
+      let d = s.data;
+      if (!d) { try { d = await getJSON(s.file); } catch (_) { d = null; } }
+      const join = d?.nodes?.flatMap(n => n.blocks || []).find(b => b.type === 'join');
+      const [c1, c2] = PALETTE[i % PALETTE.length];
+      const url = `${base}?s=${encodeURIComponent(s.id)}`;
+      return `<article class="s-card">
+        <div class="s-head"><div class="s-dot" style="--c1:${c1};--c2:${c2}">${i + 1}</div>
+          <div><div class="s-t">${esc(s.title)}</div>${s.subtitle ? `<div class="s-sub">${esc(s.subtitle)}</div>` : ''}</div></div>
+        <div class="s-actions">
+          <a class="btn primary" href="${url}#present-1">▶ מצב הצגה</a>
+          <a class="btn" href="${url}">פתיחת הפרח</a>
+        </div>
+        <div class="s-links">
+          <button type="button" data-copy="${esc(url)}">קישור למשתתפים</button>
+          ${join ? `<a href="${esc(join.url)}" target="_blank" rel="noopener">מנטימטר ↗</a>` : ''}
+        </div>
+      </article>`;
+    }));
+    box.innerHTML = cards.join('');
+    box.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => copy(b.dataset.copy)));
+  })();
+
+  // checklist remembered per device
+  const KEY = 'shminiot_team_check';
+  const boxes = [...document.querySelectorAll('#check input')];
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (_) {}
+  boxes.forEach((b, i) => {
+    b.checked = !!saved[i];
+    b.addEventListener('change', () => { try { localStorage.setItem(KEY, JSON.stringify(boxes.map(x => x.checked))); } catch (_) {} });
+  });
+  $('#resetCheck').addEventListener('click', () => {
+    boxes.forEach(b => b.checked = false);
+    try { localStorage.removeItem(KEY); } catch (_) {}
+  });
+})();
+</script>
+</body>
+</html>
