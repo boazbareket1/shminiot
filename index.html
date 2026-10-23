@@ -205,6 +205,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .p-bar .p-next:hover:not(:disabled){background:#3f7a6c}
 .p-prog{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
 .p-prog span{display:block;height:100%;background:var(--sand);transition:width .3s}
+.block.join{border-top:4px solid var(--sand)}
+.join-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.join-qr{width:min(220px,60vw);aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:#fffaf0}
+.join-info{display:flex;flex-direction:column;gap:8px;flex:1 1 200px}
+.join-step{font-size:1.05rem}
+.join-open{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:8px 18px;border-radius:999px;background:var(--sea-deep);color:#fff;text-decoration:none}
+.join-open:hover{background:#3f7a6c}
+.p-slide .join-qr{width:min(320px,70vw)}
 .more-btn{margin-top:10px;border:0;background:none;color:var(--sea-deep);font-weight:400;padding:0;text-decoration:underline;text-underline-offset:4px}
 
 .questions{margin-top:26px}
@@ -572,6 +580,13 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         const lyrics = b.lyrics ? `<div class="poem-body">${esc(b.lyrics)}</div>` : '';
         const link = b.lyricsUrl ? `<a class="lyrics-link" href="${esc(b.lyricsUrl)}" target="_blank" rel="noopener">למילות השיר ↗</a>` : '';
         return `<div class="block song" id="${id}"><div class="kind">${esc(b.label || 'שיר להאזנה')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${src}${b.text ? `<p class="listen">${esc(b.text)}</p>` : ''}${player}${lyrics}${link}${more}</div>`;
+      }
+      case 'join': {
+        const host = (() => { try { const u = new URL(b.url); return u.host.replace(/^www\./, '') + (b.code ? '' : u.pathname.replace(/\/$/, '')); } catch (_) { return ''; } })();
+        return `<div class="block join" id="${id}"><div class="kind">${esc(b.label || 'השתתפות מהטלפון')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}
+          <div class="join-row">${b.qr ? `<img class="join-qr" src="${esc(b.qr)}" alt="קוד QR להצטרפות">` : ''}
+          <div class="join-info"><span class="join-step">סורקים את הקוד במצלמת הטלפון</span>${host ? `<span class="join-step">או נכנסים לכתובת <b dir="ltr">${esc(host)}</b>${b.code ? ` ומקלידים את הקוד <b dir="ltr">${esc(b.code)}</b>` : ''}</span>` : ''}
+          <a class="join-open" href="${esc(b.url)}" target="_blank" rel="noopener">פתיחה בלשונית חדשה ↗</a></div></div>${src}${more}</div>`;
       }
       case 'image':
         return `<figure class="block image" id="${id}" style="margin:0">${kind}<img src="${esc(b.src)}" alt="${esc(b.alt || b.caption || '')}" loading="lazy" tabindex="0" role="button" aria-label="הגדלת התמונה">${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}<span class="zoom-hint">לחיצה על התמונה מגדילה אותה</span>${more}</figure>`;

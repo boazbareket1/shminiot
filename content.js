@@ -30,6 +30,14 @@ window.workshopLibrary = {
       ],
       "blocks": [
        {
+        "type": "join",
+        "label": "השתתפות מהטלפון",
+        "title": "מנטימטר",
+        "text": "כל אחד עונה מהטלפון שלו, והתשובות של כולם מופיעות יחד על המסך.",
+        "url": "https://www.menti.com/al3mp124yqzp",
+        "qr": "img/menti-hashefa.png"
+       },
+       {
         "type": "text",
         "label": "שיר להשמעה",
         "title": "שיר לבחירתך",
