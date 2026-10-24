@@ -1080,9 +1080,30 @@ window.workshopLibrary = {
        {
         "type": "song",
         "label": "פס קול למסע",
-        "title": "מוזיקה רגועה לליווי המסע",
-        "text": "להפעיל בעוצמה נמוכה לפני תחילת ההקראה, ולהנמיך בהדרגה בפסקה האחרונה.",
-        "youtube": "https://www.youtube.com/watch?v=c1IxzVIs7cM"
+        "title": "בחירת פס קול",
+        "text": "לבחור אחת מהאפשרויות ולהפעיל בעוצמה נמוכה לפני תחילת ההקראה. המוזיקה ממשיכה לאורך כל המסע, ואפשר להחליף אותה בלחיצה.",
+        "options": [
+         {
+          "title": "אפשרות 1 · רגוע",
+          "note": "הבחירה הרגועה שלך",
+          "youtube": "https://www.youtube.com/watch?v=c1IxzVIs7cM"
+         },
+         {
+          "title": "אפשרות 2",
+          "note": "הבחירה הנוספת שלך",
+          "youtube": "https://www.youtube.com/watch?v=KQgzc6f1OTU"
+         },
+         {
+          "title": "אפשרות 3 · טנפורה",
+          "note": "צליל בסיס רצוף ב־D – מתכתב עם ה'כוונון' במסע",
+          "youtube": "https://www.youtube.com/watch?v=g_GYHCVeCPU"
+         },
+         {
+          "title": "אפשרות 4 · Weightless",
+          "note": "Marconi Union, גרסה מורחבת – אמביינט רך בלי צבע מזרחי",
+          "youtube": "https://www.youtube.com/watch?v=sYoqCJNPxv4"
+         }
+        ]
        },
        {
         "type": "poem",

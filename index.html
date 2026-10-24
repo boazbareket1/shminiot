@@ -168,6 +168,22 @@ button{font:inherit;color:inherit;cursor:pointer}
 .song .listen{font-style:italic;color:var(--ink-soft);margin:8px 0 12px}
 .yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#1d2a2a;display:grid;place-items:center;margin:6px 0 10px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.tracks{display:flex;flex-direction:column;gap:8px;margin:8px 0 6px}
+.track{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;text-align:right;min-height:52px;padding:10px 16px;border-radius:14px;border:1px solid var(--line);background:#fffaf0;color:var(--ink);font:inherit;cursor:pointer}
+.track:hover{background:#fff}
+.track svg{flex:none;color:var(--sea-deep)}
+.track .tr-t{font-weight:500}
+.track .tr-n{flex-basis:100%;padding-inline-start:28px;color:var(--ink-soft);font-size:.9rem}
+.track.playing{border-color:var(--sea-deep);background:rgba(127,181,166,.18)}
+.track.playing svg path{d:path("M7 5h4v14H7zM13 5h4v14h-4z")}
+.bg-hint{color:var(--ink-soft);font-size:.85rem;margin:2px 0 0}
+#bgPlayer{position:fixed;top:64px;left:12px;z-index:18;width:min(148px,40vw);background:#1d2a2a;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);display:none}
+#bgPlayer.on{display:block}
+#bgPlayer .bp-v{aspect-ratio:16/9;position:relative}
+#bgPlayer iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#bgPlayer .bp-bar{display:flex;align-items:center;gap:6px;padding:5px 6px;color:#f6f1e6;font-size:.75rem}
+#bgPlayer .bp-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bgPlayer button{flex:none;min-height:36px;padding:4px 10px;border-radius:999px;border:0;background:rgba(255,255,255,.9);color:#1d2a2a;font:inherit;font-size:.82rem;cursor:pointer}
 .yt-play{display:flex;gap:8px;align-items:center;border:0;border-radius:999px;padding:12px 22px;min-height:48px;background:rgba(255,255,255,.92);color:#1d2a2a;font:inherit;font-weight:500;cursor:pointer}
 .yt-play:hover{background:#fff}
 .lyrics-link{display:inline-block;margin-top:4px;color:var(--sea-deep)}
@@ -410,6 +426,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     <button class="p-next" id="pNext" aria-label="השקף הבא">הבא ←</button>
   </div>
 </section>
+<div id="bgPlayer" role="region" aria-label="מוזיקה ברקע"><div class="bp-v"></div><div class="bp-bar"><span class="bp-t"></span><button type="button" id="bpStop">עצירה</button></div></div>
 <div id="imgViewer" role="dialog" aria-modal="true" aria-label="תמונה בהגדלה"><button type="button" aria-label="סגירה">✕</button><img alt=""></div>
 <div class="overlay" id="expandOverlay">
   <div class="modal" role="dialog" aria-modal="true">
@@ -594,8 +611,12 @@ body.in-node .topbar{opacity:0;pointer-events:none}
       case 'research':
         return `<div class="block research" id="${id}"><div class="kind">${esc(b.label || 'מחקר')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}<p>${esc(b.text)}</p>${src}${more}</div>`;
       case 'song': {
-        const yt = ytId(b.youtube);
-        const player = yt ? `<div class="yt" data-yt="${yt}"><button class="yt-play" aria-label="השמעת השיר ${esc(b.title || '')}"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>השמעה</button></div>` : '';
+        const tracks = (b.options?.length ? b.options : [{title: b.title, youtube: b.youtube}])
+          .map(o => ({t: o.title || b.title || 'השמעה', note: o.note || '', id: ytId(o.youtube)})).filter(o => o.id);
+        const many = tracks.length > 1;
+        const player = tracks.length ? `<div class="tracks">${tracks.map(o =>
+          `<button type="button" class="track" data-yt="${o.id}" data-t="${esc(o.t)}"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="tr-t">${esc(many ? o.t : 'השמעה')}</span>${many && o.note ? `<span class="tr-n">${esc(o.note)}</span>` : ''}</button>`).join('')}</div>
+          <p class="bg-hint">המוזיקה ממשיכה להתנגן ברקע גם כשעוברים לשקף הבא.</p>` : '';
         const lyrics = b.lyrics ? `<div class="poem-body">${esc(b.lyrics)}</div>` : '';
         const link = b.lyricsUrl ? `<a class="lyrics-link" href="${esc(b.lyricsUrl)}" target="_blank" rel="noopener">למילות השיר ↗</a>` : '';
         return `<div class="block song" id="${id}"><div class="kind">${esc(b.label || 'שיר להאזנה')}</div>${b.title ? `<h3>${esc(b.title)}</h3>` : ''}${src}${b.text ? `<p class="listen">${esc(b.text)}</p>` : ''}${player}${lyrics}${link}${more}</div>`;
@@ -618,6 +639,18 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     }
   }
 
+  let bgNow = null;
+  function markTracks() { document.querySelectorAll('.track').forEach(t => t.classList.toggle('playing', t.dataset.yt === bgNow)); }
+  function playBg(id, title) {
+    const bp = $('#bgPlayer');
+    bp.querySelector('.bp-v').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="מוזיקה ברקע" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    bp.querySelector('.bp-t').textContent = '♪ ' + (title || '');
+    bp.classList.add('on'); bgNow = id; markTracks();
+  }
+  function stopBg() {
+    const bp = $('#bgPlayer');
+    bp.querySelector('.bp-v').innerHTML = ''; bp.classList.remove('on'); bgNow = null; markTracks();
+  }
   function bindBlockUI(root, blocks, title) {
     root.querySelectorAll('[data-more]').forEach(btn => btn.addEventListener('click', () => {
       const bi = +btn.dataset.more.split('-b').pop();
@@ -643,10 +676,11 @@ body.in-node .topbar{opacity:0;pointer-events:none}
         btn.textContent = 'קלף נוסף';
       });
     });
-    root.querySelectorAll('.yt-play').forEach(btn => btn.addEventListener('click', () => {
-      const box = btn.parentElement;
-      box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="נגן השיר" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-    }));
+    root.querySelectorAll('.track').forEach(btn => {
+      if (bgNow === btn.dataset.yt) btn.classList.add('playing');
+      btn.addEventListener('click', () => bgNow === btn.dataset.yt ? stopBg() : playBg(btn.dataset.yt, btn.dataset.t));
+    });
+
   }
   function renderDetail(key) {
     const isHub = key === 'hub';
@@ -850,6 +884,7 @@ body.in-node .topbar{opacity:0;pointer-events:none}
     $('#presentBtn').focus({preventScroll:true});
   }
   $('#presentBtn').addEventListener('click', () => startPresent(0));
+  $('#bpStop').addEventListener('click', stopBg);
   $('#pClose').addEventListener('click', stopPresent);
   $('#pNext').addEventListener('click', () => showSlide(si + 1));
   $('#pPrev').addEventListener('click', () => showSlide(si - 1));
