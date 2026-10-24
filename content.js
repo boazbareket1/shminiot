@@ -1102,6 +1102,11 @@ window.workshopLibrary = {
           "title": "אפשרות 4 · Weightless",
           "note": "Marconi Union, גרסה מורחבת – אמביינט רך בלי צבע מזרחי",
           "youtube": "https://www.youtube.com/watch?v=sYoqCJNPxv4"
+         },
+         {
+          "title": "אפשרות 5 · פדים ודרונים",
+          "note": "פדים אמביינט ודרונים עמוקים, שעה רצופה – למדיטציה עמוקה",
+          "youtube": "https://www.youtube.com/watch?v=l15ojhhlod8"
          }
         ]
        },
